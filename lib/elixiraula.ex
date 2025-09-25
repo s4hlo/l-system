@@ -55,11 +55,13 @@ defmodule Elx do
     if Enum.count(matrix1) == Enum.count(matrix2) do
       {n, m} = get_rows_columns(matrix1)
       {n2, m2} = get_rows_columns(matrix2)
+
       if n == n2 and m == m2 do
         result =
           for i <- 0..(n - 1), j <- 0..(m - 1), into: %{} do
             {{i, j}, matrix1[{i, j}] + matrix2[{i, j}]}
           end
+
         {:ok, result}
       else
         :error
@@ -69,11 +71,51 @@ defmodule Elx do
     end
   end
 
+  def print_matrix(matrix) do
+    {n, m} = get_rows_columns(matrix)
+
+    for i <- 0..(n - 1), j <- 0..(m - 1) do
+      IO.write("#{matrix[{i, j}]} ")
+
+      if j == m - 1 do
+        IO.puts("")
+      end
+    end
+  end
+
+  def print(l) do
+    IO.inspect("---------------------")
+    IO.inspect(l)
+    IO.inspect("---------------------")
+  end
+
+  def get_submatrix(matrix) do
+    {n, m} = get_rows_columns(matrix)
+
+    print_matrix(matrix)
+    lowest = if n > m, do: m, else: n
+
+    result =
+      for i <- 0..(lowest - 1), j <- 0..(lowest - 1), into: %{} do
+        {{i, j}, matrix[{i, j}]}
+      end
+
+    {:ok, result}
+  end
+
   def caller() do
-    {:ok, matrix1} = to_matrix(3, 3, [1, 2, 3, 4, 5, 6,7,8,9])
+    {:ok, matrix1} = to_matrix(3, 4, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
     # sum_matrix(matrix1, matrix2)
     # IO.inspect(matrix1)
     # get_rows_columns(matrix1)
-    sum_matrix(matrix1, matrix1)
+    # sum_matrix(matrix1, matrix1)
+    {:ok, matrix_sub} = get_submatrix(matrix1)
+    # print_matrix(matrix_sub)
+    IO.inspect("---------------------")
+    matrix_sub
+    print_matrix(matrix_sub)
   end
+
+
+
 end
