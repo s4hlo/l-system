@@ -155,11 +155,11 @@ defmodule Elx do
     end
   end
 
-
   # return true or false
   @spec goldbach(List) :: boolean()
   def goldbach(ns) do
-    primes = sieve(Enum.to_list(2..100))
+    ns_length = Enum.count(ns)
+    primes = sieve(Enum.to_list(2..ns_length))
     prime_pairs = pairs(primes, primes)
 
     evens = Enum.filter(ns, fn x -> rem(x, 2) == 0 and x > 2 end)
@@ -169,9 +169,23 @@ defmodule Elx do
     end)
   end
 
+  # return true or false
+  def triades(ns) do
+    power_list = Enum.map(ns, fn x -> x * x end)
+
+    filtered_power_list = Enum.filter(power_list, fn x -> x in ns end)
+
+    pairs = pairs(filtered_power_list, filtered_power_list)
+
+    pair_sums = Enum.map(pairs, fn {x, y} -> {x, y, x + y} end)
+
+    Enum.filter(pair_sums, fn {_x, _y, z} -> z in power_list end)
+  end
+
   def caller() do
     # sieve(Enum.to_list(2..100))
     # pairs([1, 2, 3], [4, 5, 6])
-    goldbach(Enum.to_list(4..100))
+    # goldbach(Enum.to_list(4..100))
+    triades(Enum.to_list(1..100))
   end
 end
