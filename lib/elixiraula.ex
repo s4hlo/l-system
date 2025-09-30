@@ -132,7 +132,46 @@ defmodule Elx do
     |> Enum.map(fn x -> {x, numOccurrences(xs, x)} end)
   end
 
+  def crossOut(ns, n) do
+    for x <- ns, rem(x, n) != 0 or x == n do
+      x
+    end
+  end
+
+  def to_list_evens(f) do
+    Enum.to_list(f)
+    |> Enum.filter(fn x -> rem(x, 2) == 0 end)
+  end
+
+  def sieve([]), do: []
+
+  def sieve([head | tail]) do
+    [head | sieve(crossOut(tail, head))]
+  end
+
+  def pairs(xs, ys) do
+    for x <- xs, y <- ys do
+      {x, y}
+    end
+  end
+
+
+  # return true or false
+  @spec goldbach(List) :: boolean()
+  def goldbach(ns) do
+    primes = sieve(Enum.to_list(2..100))
+    prime_pairs = pairs(primes, primes)
+
+    evens = Enum.filter(ns, fn x -> rem(x, 2) == 0 and x > 2 end)
+
+    Enum.all?(evens, fn even_num ->
+      Enum.any?(prime_pairs, fn {p1, p2} -> p1 + p2 == even_num end)
+    end)
+  end
+
   def caller() do
-    to_bag([1, 2, 3, 4, 4, 5])
+    # sieve(Enum.to_list(2..100))
+    # pairs([1, 2, 3], [4, 5, 6])
+    goldbach(Enum.to_list(4..100))
   end
 end
