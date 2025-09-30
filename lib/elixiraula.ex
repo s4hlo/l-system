@@ -124,8 +124,15 @@ defmodule Elx do
     for x <- xs, into: %{}, do: {x, numOccurrences(xs, x)}
   end
 
+  # this retorne a list of tuples
+  @spec to_bag(list(any())) :: list({any(), integer()})
+  def to_bag(xs) do
+    xs
+    |> Enum.uniq()
+    |> Enum.map(fn x -> {x, numOccurrences(xs, x)} end)
+  end
 
   def caller() do
-    map_bag([1, 2, 3, 4, 4, 5])
+    to_bag([1, 2, 3, 4, 4, 5])
   end
 end
