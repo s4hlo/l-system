@@ -182,10 +182,18 @@ defmodule Elx do
     Enum.filter(pair_sums, fn {_x, _y, z} -> z in power_list end)
   end
 
+
+  def perfect_number(n) do
+    divisors = Enum.filter(1..n, fn x -> rem(n, x) == 0 and x != n end)
+    divsor_sum = Enum.sum(divisors)
+    divsor_sum == n
+  end
+
   def caller() do
     # sieve(Enum.to_list(2..100))
     # pairs([1, 2, 3], [4, 5, 6])
     # goldbach(Enum.to_list(4..100))
     triades(Enum.to_list(1..100))
+    perfect_number(8128)
   end
 end
