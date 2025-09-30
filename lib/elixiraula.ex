@@ -103,19 +103,29 @@ defmodule Elx do
     {:ok, result}
   end
 
-  def caller() do
-    {:ok, matrix1} = to_matrix(3, 4, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-    # sum_matrix(matrix1, matrix2)
-    # IO.inspect(matrix1)
-    # get_rows_columns(matrix1)
-    # sum_matrix(matrix1, matrix1)
-    {:ok, matrix_sub} = get_submatrix(matrix1)
-    # print_matrix(matrix_sub)
-    IO.inspect("---------------------")
-    matrix_sub
-    print_matrix(matrix_sub)
+  def occursIn(xs, x) do
+    Enum.any?(xs, fn y -> y == x end)
+  end
+
+  def allOccurIn(xs, ys) do
+    Enum.all?(xs, fn x -> Enum.any?(ys, fn y -> y == x end) end)
+  end
+
+  def sameElements(xs, ys) do
+    Enum.all?(xs, fn x -> Enum.all?(ys, fn y -> y == x end) end)
+  end
+
+  def numOccurrences(xs, x) do
+    Enum.count(xs, fn y -> y == x end)
+  end
+
+  @spec map_bag(list(any())) :: %{optional(any()) => integer()}
+  def map_bag(xs) do
+    for x <- xs, into: %{}, do: {x, numOccurrences(xs, x)}
   end
 
 
-
+  def caller() do
+    map_bag([1, 2, 3, 4, 4, 5])
+  end
 end
