@@ -182,18 +182,105 @@ defmodule Elx do
     Enum.filter(pair_sums, fn {_x, _y, z} -> z in power_list end)
   end
 
-
   def perfect_number(n) do
     divisors = Enum.filter(1..n, fn x -> rem(n, x) == 0 and x != n end)
     divsor_sum = Enum.sum(divisors)
     divsor_sum == n
   end
 
-  def caller() do
-    # sieve(Enum.to_list(2..100))
-    # pairs([1, 2, 3], [4, 5, 6])
-    # goldbach(Enum.to_list(4..100))
-    triades(Enum.to_list(1..100))
-    perfect_number(8128)
+  # ----------------------------- L-System -----------------------------
+
+  # F -> move forward and draw
+  # f -> move forward without drawing
+  # + -> turn right
+  # - -> turn left
+  # [ -> push the current state to the stack
+  # ] -> pop the state from the stack
+  def l_system(axiom, rules) do
+    axiom
+    |> String.graphemes()
+    |> Enum.map(fn x -> Map.get(rules, x, x) end)
+    |> Enum.join("")
+  end
+
+  def l_system_iter(axiom, rules, n) do
+    Enum.reduce(1..n, axiom, fn _i, current ->
+      l_system(current, rules)
+    end)
+  end
+
+  def generate_python_codestring(l_system_string, length, angle) do
+    header = """
+import turtle
+
+length = #{length}
+angle = #{angle}
+pen = turtle.Turtle()
+pen.speed(0)
+
+turtle.bgcolor("#1e1e2e")
+pen.pencolor("#cba6f7")
+pen.pensize(3)
+
+pen.penup()
+pen.goto(300, -300)
+pen.pendown()
+pen.left(90)
+
+# Stack for push/pop operations
+stack = []
+
+"""
+
+    commands = l_system_string
+    |> String.graphemes()
+    |> Enum.map(fn char ->
+      case char do
+        "F" -> "pen.forward(length)\n"
+        "f" -> "pen.penup()\npen.forward(length)\npen.pendown()\n"
+        "+" -> "pen.right(angle)\n"
+        "-" -> "pen.left(angle)\n"
+        "[" -> "stack.append((pen.position(), pen.heading()))\n"
+        "]" -> "pos, ang = stack.pop()\npen.penup()\npen.setposition(pos)\npen.setheading(ang)\npen.pendown()\n"
+        _ -> ""
+      end
+    end)
+    |> Enum.join("")
+
+    header <> commands <> "\nturtle.done()\n"
+  end
+
+  def save_python_file(filename, l_system_string, length, angle) do
+    python_code = generate_python_codestring(l_system_string, length, angle)
+    File.write!(filename, python_code)
+    {:ok, filename}
+  end
+
+  def run_python_file(filename) do
+    System.cmd("python3", [filename])
+  end
+
+  def generate_and_run_fractal(axiom, rules, iterations, length, angle, filename \\ "fractal.py") do
+    # Gerar string L-system
+    l_string = l_system_iter(axiom, rules, iterations)
+
+    # Salvar arquivo Python
+    save_python_file(filename, l_string, length, angle)
+
+    # Executar o arquivo
+    {output, exit_code} = run_python_file(filename)
+
+    {output, exit_code, filename}
+  end
+
+  def runner() do
+    # "wiki_plant": {
+    #     "axiom": "-X",
+    #     "rules": %{"X" => "F+[[X]-X]-F[-FX]+X", "F" => "FF"},
+    #     "angle": 25,
+    # },
+
+    # Gerar e executar fractal automaticamente
+    generate_and_run_fractal("-X", %{"X" => "F+[[X]-X]-F[-FX]+X", "F" => "FF"}, 5, 10, 25)
   end
 end
