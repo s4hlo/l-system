@@ -8,16 +8,15 @@ defmodule Sys do
     |> Enum.join("")
   end
 
+  ## TODO entender
   def l_system_stochastic(axiom, rules) do
     axiom
     |> String.graphemes()
     |> Enum.map(fn x ->
       case Map.get(rules, x) do
         rules_list when is_list(rules_list) ->
-          # Calcular probabilidades normalizadas baseadas nos pesos
           total_weight = Enum.sum(Enum.map(rules_list, fn {_rule, weight} -> weight end))
 
-          # Escolher uma regra baseada na probabilidade normalizada
           random_val = :rand.uniform()
 
           {_, selected_rule} = Enum.reduce_while(rules_list, {0.0, nil}, fn {rule, weight}, {cumulative, _} ->
@@ -84,6 +83,9 @@ defmodule Sys do
           "f" ->
             "pen.penup()\npen.forward(length)\npen.pendown()\n"
 
+          "L" ->
+            "pen.pencolor('#a6e3a1')\npen.begin_fill()\npen.circle(30, 60)\npen.left(120)\npen.circle(30, 60)\npen.left(120)\npen.end_fill()\npen.pencolor('#cba6f7')\n"
+
           "+" ->
             "pen.right(angle)\n"
 
@@ -132,7 +134,7 @@ defmodule Sys do
     :rand.seed(:exs1024, {123, 456, 789})
 
     axiom = "-X"
-    rules_stochastic = %{"X" => [{"F-[[X]+X]+F[+FX]-X", 0.1}, {"F+[[X]-X]-F[-FX]+X", 0.9}], "F" => [{"FF", 1.0}]}
+    rules_stochastic = %{"X" => [{"F-[[XL]+X]+F[+FXL]-XL", 0.1}, {"F+[[XL]-X]-F[-FXL]+XL", 0.9}], "F" => [{"FF", 1.0}]}
     # rules = %{"X" => "F+[[X]-X]-F[-FX]+X", "F" => "FF"}
     iterations = 5
     # l_string = l_system_iter(axiom, rules, iterations)
