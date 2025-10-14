@@ -3,9 +3,7 @@ defmodule Sys do
 
   def l_system(axiom, rules) when is_map(rules) do
     axiom
-    |> String.graphemes()
     |> Enum.map(fn x -> Map.get(rules, x, x) end)
-    |> Enum.join("")
   end
 
   ## TODO entender
@@ -19,18 +17,22 @@ defmodule Sys do
 
           random_val = :rand.uniform()
 
-          {_, selected_rule} = Enum.reduce_while(rules_list, {0.0, nil}, fn {rule, weight}, {cumulative, _} ->
-            normalized_prob = weight / total_weight
-            new_cumulative = cumulative + normalized_prob
-            if random_val <= new_cumulative do
-              {:halt, {new_cumulative, rule}}
-            else
-              {:cont, {new_cumulative, nil}}
-            end
-          end)
+          {_, selected_rule} =
+            Enum.reduce_while(rules_list, {0.0, nil}, fn {rule, weight}, {cumulative, _} ->
+              normalized_prob = weight / total_weight
+              new_cumulative = cumulative + normalized_prob
+
+              if random_val <= new_cumulative do
+                {:halt, {new_cumulative, rule}}
+              else
+                {:cont, {new_cumulative, nil}}
+              end
+            end)
 
           selected_rule || x
-        _ -> x
+
+        _ ->
+          x
       end
     end)
     |> Enum.join("")
@@ -44,7 +46,10 @@ defmodule Sys do
 
   def l_system_iter(axiom, rules, n) do
     Enum.reduce(1..n, axiom, fn _i, current ->
-      l_system(current, rules)
+      graphemes = String.graphemes(current)
+
+      l_system(graphemes, rules)
+      |> Enum.join("")
     end)
   end
 
@@ -84,7 +89,7 @@ defmodule Sys do
             "pen.penup()\npen.forward(length)\npen.pendown()\n"
 
           "L" ->
-            "pen.pencolor('#a6e3a1')\npen.begin_fill()\npen.circle(30, 60)\npen.left(120)\npen.circle(30, 60)\npen.left(120)\npen.end_fill()\npen.pencolor('#cba6f7')\n"
+            "pen.pencolor('#a6e3a1')\npen.pensize(length - 2)\npen.begin_fill()\npen.circle(30, 60)\npen.left(120)\npen.circle(30, 60)\npen.left(120)\npen.end_fill()\npen.pensize(length - 2)\npen.pencolor('#cba6f7')\n"
 
           "+" ->
             "pen.right(angle)\n"
@@ -98,8 +103,11 @@ defmodule Sys do
           "]" ->
             "pos, ang = stack.pop()\npen.penup()\npen.setposition(pos)\npen.setheading(ang)\npen.pendown()\n"
 
-          _ ->
+          "X" ->
             ""
+
+          _ ->
+            :error
         end
       end)
       |> Enum.join("")
@@ -118,7 +126,6 @@ defmodule Sys do
   end
 
   def generate_and_run_fractal(l_string, length, angle, filename \\ "fractal.py") do
-
     save_python_file(filename, l_string, length, angle)
 
     {output, exit_code} = run_python_file(filename)
@@ -131,13 +138,14 @@ defmodule Sys do
     :rand.seed(:exs1024, {123, 456, 789})
 
     axiom = "-X"
-    rules_stochastic = %{"X" => [{"F-[[XL]+X]+F[+FXL]-XL", 0.1}, {"F+[[XL]-X]-F[-FXL]+XL", 0.9}], "F" => [{"FF", 1.0}]}
-    # rules = %{"X" => "F+[[X]-X]-F[-FX]+X", "F" => "FF"}
-    iterations = 5
+
+    # rules_stochastic = %{"X" => [{"F-[[XL]+X]+F[+FXL]-XL", 0.1}, {"F+[[XL]-X]-F[-FXL]+XL", 0.9}], "F" => [{"FF", 1.0}]}
+    rules = %{"X" => "F+[[X]-XL]-F[-FXL]+XL", "F" => "FF"}
+    iterations = 6
     # l_string = l_system_iter(axiom, rules, iterations)
-    l_string_stochastic = l_system_iter_stochastic(axiom, rules_stochastic, iterations)
+    result = l_system_iter(axiom, rules, iterations)
     # generate_and_run_fractal(l_string, 10, 25)
     # l_string_stochastic
-    generate_and_run_fractal(l_string_stochastic, 10, 25)
+    generate_and_run_fractal(result, 5, 25)
   end
 end
