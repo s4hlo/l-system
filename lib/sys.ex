@@ -9,8 +9,7 @@ defmodule Sys do
   ## TODO entender
   def l_system_stochastic(axiom, rules) do
     axiom
-    |> String.graphemes()
-    |> Enum.map(fn x ->
+    |> Enum.flat_map(fn x ->
       case Map.get(rules, x) do
         rules_list when is_list(rules_list) ->
           total_weight = Enum.sum(Enum.map(rules_list, fn {_rule, weight} -> weight end))
@@ -35,7 +34,6 @@ defmodule Sys do
           x
       end
     end)
-    |> Enum.join("")
   end
 
   def l_system_iter_stochastic(axiom, rules, n) do
@@ -59,15 +57,17 @@ defmodule Sys do
     pen = turtle.Turtle()
     pen.speed(0)
     turtle.tracer(2, 0)
+    color = "#cba6f7"
 
     turtle.bgcolor("#1e1e2e")
-    pen.pencolor("#cba6f7")
+    pen.pencolor(color)
     pen.pensize(3)
 
     pen.penup()
     pen.goto(300, -300)
     pen.pendown()
     pen.left(90)
+
 
     # Stack for push/pop operations
     stack = []
@@ -86,7 +86,10 @@ defmodule Sys do
             "pen.penup()\npen.forward(length)\npen.pendown()\n"
 
           "L" ->
-            "pen.pencolor('#a6e3a1')\npen.pensize(length - 2)\npen.begin_fill()\npen.circle(30, 60)\npen.left(120)\npen.circle(30, 60)\npen.left(120)\npen.end_fill()\npen.pensize(length - 2)\npen.pencolor('#cba6f7')\n"
+            "pen.pensize(length - 2)\npen.fillcolor(color)\npen.begin_fill()\npen.circle(30, 60)\npen.left(120)\npen.circle(30, 60)\npen.left(120)\npen.end_fill()\npen.pensize(length - 2)\n"
+
+          "*" ->
+            "color = '#a6e3a1' if color == '#cba6f7' else '#cba6f7'\npen.pencolor(color)\n"
 
           "+" ->
             "pen.right(angle)\n"
@@ -136,11 +139,12 @@ defmodule Sys do
 
     axiom = "-X" |> String.graphemes()
 
-    # rules_stochastic = %{"X" => [{"F-[[XL]+X]+F[+FXL]-XL", 0.1}, {"F+[[XL]-X]-F[-FXL]+XL", 0.9}], "F" => [{"FF", 1.0}]}
-    rules = %{"X" => "F+[[X]-XL]-F[-FXL]+XL", "F" => "FF"} |> Map.new(fn {k, v} -> {k, String.graphemes(v)} end)
+    rules_stochastic = %{"X" => [{"F-[[XL]+X]+F[+FXL]-XL", 0.1}, {"F+[[XL]-X]-F[-FXL]+XL", 0.9}], "F" => [{"FF", 1.0}]}
+    # rules = %{"X" => "F+[[X]-X*L*]-F[-FX]+X*L*", "F" => "FF"} |> Map.new(fn {k, v} -> {k, String.graphemes(v)} end)
     iterations = 6
     # l_string = l_system_iter(axiom, rules, iterations)
-    result = l_system_iter(axiom, rules, iterations) |> Enum.join("")
+    # result = l_system_iter(axiom, rules, iterations) |> Enum.join("")
+    result = l_system_iter_stochastic(axiom, rules_stochastic, iterations) |> Enum.join("")
     # generate_and_run_fractal(l_string, 10, 25)
     # l_string_stochastic
     generate_and_run_fractal(result, 5, 25)
