@@ -9,7 +9,8 @@ defmodule Sys do
   ## TODO entender
   def l_system_stochastic(axiom, rules) do
     axiom
-    |> Enum.flat_map(fn x ->
+    |> String.graphemes()
+    |> Enum.map(fn x ->
       case Map.get(rules, x) do
         rules_list when is_list(rules_list) ->
           total_weight = Enum.sum(Enum.map(rules_list, fn {_rule, weight} -> weight end))
@@ -34,6 +35,7 @@ defmodule Sys do
           x
       end
     end)
+    |> Enum.join("")
   end
 
   def l_system_iter_stochastic(axiom, rules, n) do
@@ -139,12 +141,11 @@ defmodule Sys do
 
     axiom = "-X" |> String.graphemes()
 
-    rules_stochastic = %{"X" => [{"F-[[XL]+X]+F[+FXL]-XL", 0.1}, {"F+[[XL]-X]-F[-FXL]+XL", 0.9}], "F" => [{"FF", 1.0}]}
-    # rules = %{"X" => "F+[[X]-X*L*]-F[-FX]+X*L*", "F" => "FF"} |> Map.new(fn {k, v} -> {k, String.graphemes(v)} end)
+    # rules_stochastic = %{"X" => [{"F-[[XL]+X]+F[+FXL]-XL", 0.1}, {"F+[[XL]-X]-F[-FXL]+XL", 0.9}], "F" => [{"FF", 1.0}]}
+    rules = %{"X" => "F+[[X]-X*L*]-F[-FX]+X*L*", "F" => "FF"} |> Map.new(fn {k, v} -> {k, String.graphemes(v)} end)
     iterations = 6
     # l_string = l_system_iter(axiom, rules, iterations)
-    # result = l_system_iter(axiom, rules, iterations) |> Enum.join("")
-    result = l_system_iter_stochastic(axiom, rules_stochastic, iterations) |> Enum.join("")
+    result = l_system_iter(axiom, rules, iterations) |> Enum.join("")
     # generate_and_run_fractal(l_string, 10, 25)
     # l_string_stochastic
     generate_and_run_fractal(result, 5, 25)
