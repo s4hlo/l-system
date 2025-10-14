@@ -118,12 +118,9 @@ defmodule Sys do
   end
 
   def generate_and_run_fractal(l_string, length, angle, filename \\ "fractal.py") do
-    # Gerar string L-system
 
-    # Salvar arquivo Python
     save_python_file(filename, l_string, length, angle)
 
-    # Executar o arquivo
     {output, exit_code} = run_python_file(filename)
 
     {output, exit_code, filename}
