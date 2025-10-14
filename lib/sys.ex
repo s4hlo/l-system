@@ -3,7 +3,7 @@ defmodule Sys do
 
   def l_system(axiom, rules) when is_map(rules) do
     axiom
-    |> Enum.map(fn x -> Map.get(rules, x, x) end)
+    |> Enum.flat_map(fn x -> Map.get(rules, x, [x]) end)
   end
 
   ## TODO entender
@@ -46,10 +46,7 @@ defmodule Sys do
 
   def l_system_iter(axiom, rules, n) do
     Enum.reduce(1..n, axiom, fn _i, current ->
-      graphemes = String.graphemes(current)
-
-      l_system(graphemes, rules)
-      |> Enum.join("")
+      l_system(current, rules)
     end)
   end
 
@@ -137,13 +134,13 @@ defmodule Sys do
     # Inicializar o gerador de números aleatórios
     :rand.seed(:exs1024, {123, 456, 789})
 
-    axiom = "-X"
+    axiom = "-X" |> String.graphemes()
 
     # rules_stochastic = %{"X" => [{"F-[[XL]+X]+F[+FXL]-XL", 0.1}, {"F+[[XL]-X]-F[-FXL]+XL", 0.9}], "F" => [{"FF", 1.0}]}
-    rules = %{"X" => "F+[[X]-XL]-F[-FXL]+XL", "F" => "FF"}
+    rules = %{"X" => "F+[[X]-XL]-F[-FXL]+XL", "F" => "FF"} |> Map.new(fn {k, v} -> {k, String.graphemes(v)} end)
     iterations = 6
     # l_string = l_system_iter(axiom, rules, iterations)
-    result = l_system_iter(axiom, rules, iterations)
+    result = l_system_iter(axiom, rules, iterations) |> Enum.join("")
     # generate_and_run_fractal(l_string, 10, 25)
     # l_string_stochastic
     generate_and_run_fractal(result, 5, 25)
