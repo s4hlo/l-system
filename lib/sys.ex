@@ -89,25 +89,57 @@ defmodule Sys do
             "pen.forward(length)\n"
 
           "f" ->
-            "pen.penup()\npen.forward(length)\npen.pendown()\n"
+            """
+            pen.penup()
+            pen.forward(length)
+            pen.pendown()
+            """
 
           "L" ->
-            "pen.pensize(2)\npen.fillcolor(color)\npen.begin_fill()\npen.circle(30, 60)\npen.left(120)\npen.circle(30, 60)\npen.left(120)\npen.end_fill()\npen.pensize(2)\n"
+            """
+            pen.pensize(2)
+            pen.fillcolor(color)
+            pen.begin_fill()
+            pen.circle(30, 60)
+            pen.left(120)
+            pen.circle(30, 60)
+            pen.left(120)
+            pen.end_fill()
+            pen.pensize(2)
+            """
 
           "*" ->
-            "color_index = (color_index + 1) % 4\ncolor = colors[color_index]\npen.pencolor(color)\n"
+            """
+            color_index = (color_index + 1) % 4
+            color = colors[color_index]
+            pen.pencolor(color)
+            """
 
           "+" ->
-            "pen.right(angle)\n"
+            """
+            pen.right(angle)
+            """
 
           "-" ->
-            "pen.left(angle)\n"
+            """
+            pen.left(angle)
+            """
 
           "[" ->
-            "stack.append((pen.position(), pen.heading(), pen.pensize()))\npen.pensize(max(1, cpz(pen.pensize())))\n"
+            """
+            stack.append((pen.position(), pen.heading(), pen.pensize()))
+            pen.pensize(max(1, cpz(pen.pensize())))
+            """
 
           "]" ->
-            "pos, ang, pensize = stack.pop()\npen.penup()\npen.setposition(pos)\npen.setheading(ang)\npen.pendown()\npen.pensize(max(1, cpz(pensize)))\n"
+            """
+            pos, ang, pensize = stack.pop()
+            pen.penup()
+            pen.setposition(pos)
+            pen.setheading(ang)
+            pen.pendown()
+            pen.pensize(max(1, cpz(pensize)))
+            """
 
           "X" ->
             ""
