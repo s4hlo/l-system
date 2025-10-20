@@ -57,11 +57,17 @@ defmodule Sys do
     pen = turtle.Turtle()
     pen.speed(0)
     turtle.tracer(2, 0)
-    color = "#cba6f7"
+
+    colors = ["#cba6f7", "#5d9b58", "#cba6f7", "#a6e3a1"]
+    color_index = 0
+    color = colors[color_index]
+
+    def cpz(pensize):
+      return pensize - 0
 
     turtle.bgcolor("#1e1e2e")
     pen.pencolor(color)
-    pen.pensize(3)
+    pen.pensize(4)
 
     pen.penup()
     pen.goto(300, -300)
@@ -86,10 +92,10 @@ defmodule Sys do
             "pen.penup()\npen.forward(length)\npen.pendown()\n"
 
           "L" ->
-            "pen.pensize(length - 2)\npen.fillcolor(color)\npen.begin_fill()\npen.circle(30, 60)\npen.left(120)\npen.circle(30, 60)\npen.left(120)\npen.end_fill()\npen.pensize(length - 2)\n"
+            "pen.pensize(2)\npen.fillcolor(color)\npen.begin_fill()\npen.circle(30, 60)\npen.left(120)\npen.circle(30, 60)\npen.left(120)\npen.end_fill()\npen.pensize(2)\n"
 
           "*" ->
-            "color = '#a6e3a1' if color == '#cba6f7' else '#cba6f7'\npen.pencolor(color)\n"
+            "color_index = (color_index + 1) % 4\ncolor = colors[color_index]\npen.pencolor(color)\n"
 
           "+" ->
             "pen.right(angle)\n"
@@ -98,10 +104,10 @@ defmodule Sys do
             "pen.left(angle)\n"
 
           "[" ->
-            "stack.append((pen.position(), pen.heading()))\n"
+            "stack.append((pen.position(), pen.heading(), pen.pensize()))\npen.pensize(max(1, cpz(pen.pensize())))\n"
 
           "]" ->
-            "pos, ang = stack.pop()\npen.penup()\npen.setposition(pos)\npen.setheading(ang)\npen.pendown()\n"
+            "pos, ang, pensize = stack.pop()\npen.penup()\npen.setposition(pos)\npen.setheading(ang)\npen.pendown()\npen.pensize(max(1, cpz(pensize)))\n"
 
           "X" ->
             ""
@@ -137,18 +143,26 @@ defmodule Sys do
     # Inicializar o gerador de números aleatórios
     :rand.seed(:exs1024, {123, 456, 789})
 
-    axiom = "-X" |> String.graphemes()
+    iterations = 4
 
-    rules_stochastic = %{"X" => [{"F-[[X*L*]+X]+F[+FX*L*]-X*L*", 0.1}, {"F+[[X*L*]-X]-F[-FX*L*]+X*L*", 0.9}], "F" => [{"FF", 1.0}]} |> Map.new(
-      fn {k, v} -> {k, Enum.map(v, fn {rule, weight} -> {String.graphemes(rule), weight} end)} end
-    )
-    # rules = %{"X" => "F+[[X]-X*L*]-F[-FX]+X*L*", "F" => "FF"} |> Map.new(fn {k, v} -> {k, String.graphemes(v)} end)
-    iterations = 6
-    # l_string = l_system_iter(axiom, rules, iterations)
-    # result = l_system_iter(axiom, rules, iterations) |> Enum.join("")
-    result = l_system_iter_stochastic(axiom, rules_stochastic, iterations) |> Enum.join("")
-    # generate_and_run_fractal(l_string, 10, 25)
-    # l_string_stochastic
-    generate_and_run_fractal(result, 5, 25)
+    # axiom = "-X" |> String.graphemes()
+
+    # rules_stochastic = %{"X" => [{"F-[[X*L*]+X]+F[+FX*L*]-X*L*", 0.1}, {"F+[[X*L*]-X]-F[-FX*L*]+X*L*", 0.9}], "F" => [{"FF", 1.0}]} |> Map.new(
+    #   fn {k, v} -> {k, Enum.map(v, fn {rule, weight} -> {String.graphemes(rule), weight} end)} end
+    # )
+
+    # result = l_system_iter_stochastic(axiom, rules_stochastic, iterations) |> Enum.join("")
+    # generate_and_run_fractal(result, 10, 25)
+
+
+    axiom = "-X" |> String.graphemes()
+    rules = %{"X" => "F+[[X]-X*L*]-F[-FX]+X*L*", "F" => "FF"} |> Map.new(fn {k, v} -> {k, String.graphemes(v)} end)
+    result = l_system_iter(axiom, rules, iterations) |> Enum.join("")
+
+
+
+    # special details
+    # color of leaves changes every spawn
+    generate_and_run_fractal(result, 10, 25)
   end
 end
