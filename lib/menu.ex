@@ -1,6 +1,4 @@
 defmodule Menu do
-  @config_file "setup.cfg"
-
   def show_menu() do
     IO.puts("\n=== L-System Generator ===")
     IO.puts("1 - Create new L-System")
@@ -108,8 +106,8 @@ defmodule Menu do
       length: length
     }
 
-    save_config(config)
-    execute_system(config)
+    Configfile.save(config)
+    Sys.execute_system(config)
 
     show_menu()
   end
@@ -173,109 +171,16 @@ defmodule Menu do
     |> Map.new()
   end
 
-  defp save_config(config) do
-    content = [
-      "type=#{config.type}",
-      "axiom=#{config.axiom}",
-      "rules=#{encode_rules(config.rules, config.type)}",
-      "iterations=#{config.iterations}",
-      "angle=#{config.angle}",
-      "length=#{config.length}"
-    ]
-    |> Enum.join("\n")
-
-    File.write!(@config_file, content)
-    IO.puts("\nConfiguration saved to #{@config_file}")
-  end
-
-  defp encode_rules(rules, "deterministic") do
-    rules
-    |> Enum.map(fn {k, v} -> "#{k}=#{Enum.join(v)}" end)
-    |> Enum.join(";")
-  end
-
-  defp encode_rules(rules, "stochastic") do
-    rules
-    |> Enum.flat_map(fn {k, values} ->
-      Enum.map(values, fn {v, w} -> "#{k}=#{Enum.join(v)},#{w}" end)
-    end)
-    |> Enum.join(";")
-  end
-
   defp load_saved_system() do
-    if File.exists?(@config_file) do
-      IO.puts("\nLoading configuration from #{@config_file}...")
-      config = read_config()
-      execute_system(config)
+    if Configfile.exists?() do
+      IO.puts("\nLoading configuration from #{Configfile.get_filename()}...")
+      config = Configfile.read()
+      Sys.execute_system(config)
       show_menu()
     else
-      IO.puts("\nNo saved configuration found (#{@config_file})")
+      IO.puts("\nNo saved configuration found (#{Configfile.get_filename()})")
       show_menu()
     end
   end
 
-  defp read_config() do
-    content = File.read!(@config_file)
-
-    config = content
-    |> String.split("\n")
-    |> Enum.reduce(%{}, fn line, acc ->
-      case String.split(line, "=", parts: 2) do
-        [key, value] ->
-          Map.put(acc, String.to_atom(key), value)
-        _ ->
-          acc
-      end
-    end)
-
-    %{
-      type: config.type,
-      axiom: config.axiom,
-      rules: decode_rules(config.rules, config.type),
-      iterations: String.to_integer(config.iterations),
-      angle: String.to_integer(config.angle),
-      length: String.to_integer(config.length)
-    }
-  end
-
-  defp decode_rules(rules_str, "deterministic") do
-    rules_str
-    |> String.split(";")
-    |> Enum.map(fn rule ->
-      [k, v] = String.split(rule, "=", parts: 2)
-      {k, String.graphemes(v)}
-    end)
-    |> Map.new()
-  end
-
-  defp decode_rules(rules_str, "stochastic") do
-    rules_str
-    |> String.split(";")
-    |> Enum.map(fn rule ->
-      [k, v_w] = String.split(rule, "=", parts: 2)
-      [v, w] = String.split(v_w, ",")
-      {k, String.graphemes(v), String.to_float(w)}
-    end)
-    |> Enum.group_by(
-      fn {k, _v, _w} -> k end,
-      fn {_k, v, w} -> {v, w} end
-    )
-  end
-
-  defp execute_system(config) do
-    IO.puts("\nGenerating fractal...")
-
-    axiom = String.graphemes(config.axiom)
-
-    result = case config.type do
-      "deterministic" ->
-        Sys.l_system_iter(axiom, config.rules, config.iterations)
-      "stochastic" ->
-        Sys.l_system_iter_stochastic(axiom, config.rules, config.iterations)
-    end
-    |> Enum.join("")
-
-    Py.generate_and_run_fractal(result, config.length, config.angle)
-    IO.puts("Fractal generated!")
-  end
 end

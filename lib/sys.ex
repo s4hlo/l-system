@@ -46,11 +46,40 @@ defmodule Sys do
     end)
   end
 
+  def execute_system(config) do
+    IO.puts("\nGenerating fractal...")
+
+    axiom = String.graphemes(config.axiom)
+
+    result = case config.type do
+      "deterministic" ->
+        Sys.l_system_iter(axiom, config.rules, config.iterations)
+      "stochastic" ->
+        Sys.l_system_iter_stochastic(axiom, config.rules, config.iterations)
+    end
+    |> Enum.join("")
+
+    Py.generate_and_run_fractal(result, config.length, config.angle)
+    IO.puts("Fractal generated!")
+  end
+
+  def compare_lystem(config, g_string) do
+    axiom = String.graphemes(config.axiom)
+    result = case config.type do
+      "deterministic" ->
+        Sys.l_system_iter(axiom, config.rules, config.iterations)
+      "stochastic" ->
+        Sys.l_system_iter_stochastic(axiom, config.rules, config.iterations)
+    end |> Enum.join("")
+    result == g_string
+  end
+
+
   def runner() do
     # Inicializar o gerador de números aleatórios
     :rand.seed(:exs1024, {123, 456, 789})
 
-    iterations = 4
+    # iterations = 4
 
     # axiom = "-X" |> String.graphemes()
 
@@ -62,15 +91,22 @@ defmodule Sys do
     # generate_and_run_fractal(result, 10, 25)
 
 
-    axiom = "-X" |> String.graphemes()
-    rules = %{"X" => "F+[[X]-X*L*]-F[-FX]+X*L*", "F" => "FF"} |> Map.new(fn {k, v} -> {k, String.graphemes(v)} end)
-    result = l_system_iter(axiom, rules, iterations) |> Enum.join("")
+    # axiom = "-X" |> String.graphemes()
+    # rules = %{"X" => "F+[[X]-X*L*]-F[-FX]+X*L*", "F" => "FF"} |> Map.new(fn {k, v} -> {k, String.graphemes(v)} end)
+    # result = l_system_iter(axiom, rules, iterations) |> Enum.join("")
 
 
 
-    # special details
-    # color of leaves changes every spawn
-    Py.generate_and_run_fractal(result, 10, 25)
+    # # special details
+    # # color of leaves changes every spawn
+    # Py.generate_and_run_fractal(result, 10, 25)
+
+
+    Configfile.read()
+    config = Configfile.read()
+    execute_system(config)
+
+
 
 
 
