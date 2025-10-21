@@ -189,17 +189,17 @@ defmodule Elx do
   end
 
   def runner() do
-    # Inicializar o gerador de números aleatórios
-    :rand.seed(:exs1024, {123, 456, 789})
+    # # Inicializar o gerador de números aleatórios
+    # :rand.seed(:exs1024, {123, 456, 789})
 
-    axiom = "-X"
-    rules_stochastic = %{"X" => [{"F-[[X]+X]+F[+FX]-X", 0.1}, {"F+[[X]-X]-F[-FX]+X", 0.9}], "F" => [{"FF", 1.0}]}
-    # rules = %{"X" => "F+[[X]-X]-F[-FX]+X", "F" => "FF"}
-    iterations = 5
-    # l_string = l_system_iter(axiom, rules, iterations)
-    l_string_stochastic = l_system_iter_stochastic(axiom, rules_stochastic, iterations)
-    # generate_and_run_fractal(l_string, 10, 25)
-    # l_string_stochastic
-    generate_and_run_fractal(l_string_stochastic, 10, 25)
+    # axiom = "-X"
+    # rules_stochastic = %{"X" => [{"F-[[X]+X]+F[+FX]-X", 0.1}, {"F+[[X]-X]-F[-FX]+X", 0.9}], "F" => [{"FF", 1.0}]}
+    # # rules = %{"X" => "F+[[X]-X]-F[-FX]+X", "F" => "FF"}
+    # iterations = 5
+    # # l_string = l_system_iter(axiom, rules, iterations)
+    # l_string_stochastic = l_system_iter_stochastic(axiom, rules_stochastic, iterations)
+    # # generate_and_run_fractal(l_string, 10, 25)
+    # # l_string_stochastic
+    # generate_and_run_fractal(l_string_stochastic, 10, 25)
   end
 end
