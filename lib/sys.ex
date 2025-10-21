@@ -60,7 +60,12 @@ defmodule Sys do
     |> Enum.join("")
 
     Py.generate_and_run_fractal(result, config.length, config.angle)
-    IO.puts("Fractal generated!")
+
+    if compare_lystem(config, result) do
+      IO.puts("Fractal generated correctly!")
+    else
+      IO.puts("Fractal generated incorrectly!")
+    end
   end
 
   def compare_lystem(config, g_string) do

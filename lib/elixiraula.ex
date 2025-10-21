@@ -188,18 +188,27 @@ defmodule Elx do
     divsor_sum == n
   end
 
-  def runner() do
-    # # Inicializar o gerador de números aleatórios
-    # :rand.seed(:exs1024, {123, 456, 789})
+  def sum_curry(a) do
+    fn b -> a + b end
+  end
 
-    # axiom = "-X"
-    # rules_stochastic = %{"X" => [{"F-[[X]+X]+F[+FX]-X", 0.1}, {"F+[[X]-X]-F[-FX]+X", 0.9}], "F" => [{"FF", 1.0}]}
-    # # rules = %{"X" => "F+[[X]-X]-F[-FX]+X", "F" => "FF"}
-    # iterations = 5
-    # # l_string = l_system_iter(axiom, rules, iterations)
-    # l_string_stochastic = l_system_iter_stochastic(axiom, rules_stochastic, iterations)
-    # # generate_and_run_fractal(l_string, 10, 25)
-    # # l_string_stochastic
-    # generate_and_run_fractal(l_string_stochastic, 10, 25)
+  def map_curry(a,f) do
+    fn b -> f.(a,b) end
+  end
+
+  def runner() do
+
+    sum_c = fn a -> fn b -> fn c -> a + b + c end end end
+
+    # sum_1 = sum_c. (1)
+    sum_2 = sum_c.(1).(2)
+    sum_2.(3)
+    |> IO.inspect()
+
+    sum_c.(1,2,3)
+
+
+
+
   end
 end

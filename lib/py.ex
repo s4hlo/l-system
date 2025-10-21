@@ -114,10 +114,15 @@ defmodule Py do
     System.cmd("python3", [filename])
   end
 
+  def delete_python_file(filename) do
+    File.rm(filename)
+  end
+
   def generate_and_run_fractal(l_string, length, angle, filename \\ "fractal.py") do
     save_file(filename, l_string, length, angle)
 
     {output, exit_code} = run_file(filename)
+    delete_python_file(filename)
 
     {output, exit_code, filename}
   end
