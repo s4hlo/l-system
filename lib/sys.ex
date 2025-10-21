@@ -71,5 +71,44 @@ defmodule Sys do
     # special details
     # color of leaves changes every spawn
     Py.generate_and_run_fractal(result, 10, 25)
+
+
+
+    # show in menu
+    # options
+    # -- create new l system
+    # -- use saved l system ( check if file exists)
+    # -- exit
+
+
+    # alphabet
+    # F - drawing forward
+    # f - move forward
+    # L - draw a leaf
+    # [ - push state
+    # ] - pop state
+    # * - change color
+    # + - turn left
+    # - - turn right
+    # X - does nothing
+
+    # - input groups
+    # l system options
+    # -- deterministic or stochastic
+    # -- axiom
+    # -- rules
+    # -- iterations
+
+    # -- rendering option
+    # -- angle of turns (degrees)
+    # -- length of forward (pixels)
+    # -- color of leaves changes every spawn
+
+    # after the user input everything, save on a file called setup.cfg, each input is a line on the file
+
+    # must have a function that reads the setup.cfg file and sets the options and executes the l system
+
+
+
   end
 end
