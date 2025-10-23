@@ -84,72 +84,9 @@ defmodule Sys do
     # Inicializar o gerador de números aleatórios
     :rand.seed(:exs1024, {123, 456, 789})
 
-    # iterations = 4
-
-    # axiom = "-X" |> String.graphemes()
-
-    # rules_stochastic = %{"X" => [{"F-[[X*L*]+X]+F[+FX*L*]-X*L*", 0.1}, {"F+[[X*L*]-X]-F[-FX*L*]+X*L*", 0.9}], "F" => [{"FF", 1.0}]} |> Map.new(
-    #   fn {k, v} -> {k, Enum.map(v, fn {rule, weight} -> {String.graphemes(rule), weight} end)} end
-    # )
-
-    # result = l_system_iter_stochastic(axiom, rules_stochastic, iterations) |> Enum.join("")
-    # generate_and_run_fractal(result, 10, 25)
-
-
-    # axiom = "-X" |> String.graphemes()
-    # rules = %{"X" => "F+[[X]-X*L*]-F[-FX]+X*L*", "F" => "FF"} |> Map.new(fn {k, v} -> {k, String.graphemes(v)} end)
-    # result = l_system_iter(axiom, rules, iterations) |> Enum.join("")
-
-
-
-    # # special details
-    # # color of leaves changes every spawn
-    # Py.generate_and_run_fractal(result, 10, 25)
-
-
     Configfile.read()
     config = Configfile.read()
     execute_system(config)
-
-
-
-
-
-    # show in menu
-    # options
-    # -- create new l system
-    # -- use saved l system ( check if file exists)
-    # -- exit
-
-
-    # alphabet
-    # F - drawing forward
-    # f - move forward
-    # L - draw a leaf
-    # [ - push state
-    # ] - pop state
-    # * - change color
-    # + - turn left
-    # - - turn right
-    # X - does nothing
-
-    # - input groups
-    # l system options
-    # -- deterministic or stochastic
-    # -- axiom
-    # -- rules
-    # -- iterations
-
-    # -- rendering option
-    # -- angle of turns (degrees)
-    # -- length of forward (pixels)
-    # -- color of leaves changes every spawn
-
-    # after the user input everything, save on a file called setup.cfg, each input is a line on the file
-
-    # must have a function that reads the setup.cfg file and sets the options and executes the l system
-
-
 
   end
 end

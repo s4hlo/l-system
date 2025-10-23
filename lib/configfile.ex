@@ -17,7 +17,11 @@ defmodule Configfile do
   end
 
   def read() do
-    content = File.read!(@config_file)
+    read(@config_file)
+  end
+
+  def read(filepath) do
+    content = File.read!(filepath)
 
     config = content
     |> String.split("\n")
