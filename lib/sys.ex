@@ -4,27 +4,36 @@ defmodule Sys do
     |> Enum.flat_map(fn x -> Map.get(rules, x, [x]) end)
   end
 
-  ## TODO entender
   def l_system_stochastic(axiom, rules) do
     axiom
     |> Enum.flat_map(fn x ->
       case Map.get(rules, x) do
         rules_list when is_list(rules_list) ->
           total_weight = Enum.sum(Enum.map(rules_list, fn {_rule, weight} -> weight end))
-
           random_val = :rand.uniform()
 
           {_, selected_rule} =
-            Enum.reduce_while(rules_list, {0.0, nil}, fn {rule, weight}, {cumulative, _} ->
+            Enum.reduce(rules_list, {0.0, nil}, fn {rule, weight}, {cumulative, selected} ->
               normalized_prob = weight / total_weight
               new_cumulative = cumulative + normalized_prob
 
-              if random_val <= new_cumulative do
-                {:halt, {new_cumulative, rule}}
+              if selected == nil and random_val <= new_cumulative do
+                {new_cumulative, rule}
               else
-                {:cont, {new_cumulative, nil}}
+                {new_cumulative, selected}
               end
             end)
+
+            # Enum.reduce_while(rules_list, {0.0, nil}, fn {rule, weight}, {cumulative, _} ->
+            #   normalized_prob = weight / total_weight
+            #   new_cumulative = cumulative + normalized_prob
+
+            #   if random_val <= new_cumulative do
+            #     {:halt, {new_cumulative, rule}}
+            #   else
+            #     {:cont, {new_cumulative, nil}}
+            #   end
+            # end)
 
           selected_rule || [x]
 
