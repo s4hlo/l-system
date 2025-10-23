@@ -1,12 +1,12 @@
-# 🌳 Elixiraula - L-System Fractal Generator
+# Elixiraula - L-System Fractal Generator
 
 Gerador de fractais usando L-Systems (Lindenmayer Systems) escrito em Elixir com visualização em Python/Turtle.
 
-## 📖 Sobre
+## Sobre
 
 L-Systems são sistemas de reescrita paralela desenvolvidos por Aristid Lindenmayer em 1968 para modelar o crescimento de plantas. Este projeto implementa tanto sistemas determinísticos quanto estocásticos, permitindo a geração de fractais complexos como árvores, flores e curvas matemáticas.
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 - **Sistemas Determinísticos**: Regras fixas que sempre produzem o mesmo resultado
 - **Sistemas Estocásticos**: Regras probabilísticas para resultados variados
@@ -14,7 +14,7 @@ L-Systems são sistemas de reescrita paralela desenvolvidos por Aristid Lindenma
 - **Configuração Flexível**: Arquivos `.cfg` para fácil customização
 - **Menu Interativo**: Interface simples para carregar e executar configurações
 
-## 🎨 Alfabeto de Comandos
+## Alfabeto de Comandos
 
 | Símbolo | Ação |
 |---------|------|
@@ -28,7 +28,7 @@ L-Systems são sistemas de reescrita paralela desenvolvidos por Aristid Lindenma
 | `-` | Virar à esquerda |
 | `X` | Não faz nada (usado no axioma) |
 
-## 🚀 Como Usar
+## Como Usar
 
 ### Pré-requisitos
 
@@ -51,7 +51,7 @@ mix run run.exs
 4 - Exit
 ```
 
-## 📝 Formato do Arquivo de Configuração
+## Formato do Arquivo de Configuração
 
 Crie um arquivo `.cfg` com o seguinte formato:
 
@@ -77,7 +77,7 @@ angle=25
 length=10
 ```
 
-## 🌿 Exemplos
+## Exemplos
 
 ### Árvore Simples
 
@@ -112,7 +112,7 @@ angle=25
 length=10
 ```
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 lib/
@@ -122,18 +122,18 @@ lib/
 └── menu.ex         # Interface do menu
 ```
 
-## 🔧 Módulos
+## Módulos
 
 - **Sys**: Funções de L-System (determinístico e estocástico)
 - **Py**: Geração e execução de código Python/Turtle
 - **Configfile**: Leitura e parsing de arquivos de configuração
 - **Menu**: Interface de linha de comando
 
-## 📚 Referências
+## Referências
 
 - [L-Systems na Wikipedia](https://en.wikipedia.org/wiki/L-system)
 - [The Algorithmic Beauty of Plants](http://algorithmicbotany.org/papers/#abop)
 
-## 📄 Licença
+## Licença
 
 MIT
