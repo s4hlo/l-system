@@ -205,7 +205,5 @@ defmodule Elx do
     sum_2.(3)
     |> IO.inspect()
 
-    sum_c.(1,2,3)
-
   end
 end
