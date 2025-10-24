@@ -92,27 +92,33 @@ lib/
 ## Módulos
 
 ### Sys
+
 Implementa a lógica dos L-Systems:
+
 - `l_system/2` - Aplica regras determinísticas
 - `l_system_stochastic/2` - Aplica regras probabilísticas
 - `l_system_iter/4` - Executa N iterações do sistema
 - `execute_system/1` - Processa configuração e gera fractal
 
 ### Py
+
 Gera código Python/Turtle para visualização:
+
 - `generate_codestring/3` - Converte string L-System em código Python
 - `save_file/4` - Salva código Python em arquivo
 - `generate_and_run_fractal/4` - Gera, executa e limpa arquivo Python
 
 ### Configfile
+
 Gerencia arquivos de configuração:
+
 - `read/0` e `read/1` - Lê arquivo .cfg e retorna mapa de configuração
 - `save/1` - Salva configuração em arquivo
 - `decode_rules/2` - Converte regras de string para mapa
 
 ### Menu
+
 Interface interativa do usuário:
+
 - `show_menu/0` - Exibe menu principal e processa opções
 - Opções: carregar setup.cfg, arquivo customizado, mostrar alfabeto
-
-
