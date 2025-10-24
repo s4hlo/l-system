@@ -21,7 +21,7 @@ defmodule Py do
     pen.pensize(4)
 
     pen.penup()
-    pen.goto(300, -300)
+    pen.goto(300, -320)
     pen.pendown()
     pen.left(90)
 

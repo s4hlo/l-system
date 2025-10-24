@@ -207,8 +207,5 @@ defmodule Elx do
 
     sum_c.(1,2,3)
 
-
-
-
   end
 end
