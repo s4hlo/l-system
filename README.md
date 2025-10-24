@@ -1,6 +1,8 @@
-# Elixiraula - L-System Fractal Generator
+# L-System Fractal Generator
 
 Gerador de fractais usando L-Systems (Lindenmayer Systems) escrito em Elixir com visualização em Python/Turtle.
+
+![Exemplo de Fractal Gerado](assets/result.png)
 
 ## Sobre
 
@@ -16,17 +18,17 @@ L-Systems são sistemas de reescrita paralela desenvolvidos por Aristid Lindenma
 
 ## Alfabeto de Comandos
 
-| Símbolo | Ação |
-|---------|------|
-| `F` | Desenhar para frente |
-| `f` | Mover para frente (sem desenhar) |
-| `L` | Desenhar uma folha |
-| `[` | Salvar posição e ângulo |
-| `]` | Restaurar posição e ângulo |
-| `*` | Mudar cor |
-| `+` | Virar à direita |
-| `-` | Virar à esquerda |
-| `X` | Não faz nada (usado no axioma) |
+| Símbolo | Ação                             |
+| ------- | -------------------------------- |
+| `F`     | Desenhar para frente             |
+| `f`     | Mover para frente (sem desenhar) |
+| `L`     | Desenhar uma folha               |
+| `[`     | Salvar posição e ângulo          |
+| `]`     | Restaurar posição e ângulo       |
+| `*`     | Mudar cor                        |
+| `+`     | Virar à direita                  |
+| `-`     | Virar à esquerda                 |
+| `X`     | Não faz nada (usado no axioma)   |
 
 ## Como Usar
 
@@ -77,41 +79,6 @@ angle=25
 length=10
 ```
 
-## Exemplos
-
-### Árvore Simples
-
-```
-type=deterministic
-axiom=X
-rules=X=F+[[X]-X]-F[-FX]+X;F=FF
-iterations=4
-angle=25
-length=10
-```
-
-### Curva de Koch
-
-```
-type=deterministic
-axiom=F
-rules=F=F+F-F-F+F
-iterations=3
-angle=90
-length=5
-```
-
-### Árvore Estocástica
-
-```
-type=stochastic
-axiom=X
-rules=X=F-[[X]+X]+F[+FX]-X,0.6;X=F+[[X]-X]-F[-FX]+X,0.4;F=FF,1.0
-iterations=4
-angle=25
-length=10
-```
-
 ## Estrutura do Projeto
 
 ```
@@ -124,16 +91,28 @@ lib/
 
 ## Módulos
 
-- **Sys**: Funções de L-System (determinístico e estocástico)
-- **Py**: Geração e execução de código Python/Turtle
-- **Configfile**: Leitura e parsing de arquivos de configuração
-- **Menu**: Interface de linha de comando
+### Sys
+Implementa a lógica dos L-Systems:
+- `l_system/2` - Aplica regras determinísticas
+- `l_system_stochastic/2` - Aplica regras probabilísticas
+- `l_system_iter/4` - Executa N iterações do sistema
+- `execute_system/1` - Processa configuração e gera fractal
 
-## Referências
+### Py
+Gera código Python/Turtle para visualização:
+- `generate_codestring/3` - Converte string L-System em código Python
+- `save_file/4` - Salva código Python em arquivo
+- `generate_and_run_fractal/4` - Gera, executa e limpa arquivo Python
 
-- [L-Systems na Wikipedia](https://en.wikipedia.org/wiki/L-system)
-- [The Algorithmic Beauty of Plants](http://algorithmicbotany.org/papers/#abop)
+### Configfile
+Gerencia arquivos de configuração:
+- `read/0` e `read/1` - Lê arquivo .cfg e retorna mapa de configuração
+- `save/1` - Salva configuração em arquivo
+- `decode_rules/2` - Converte regras de string para mapa
 
-## Licença
+### Menu
+Interface interativa do usuário:
+- `show_menu/0` - Exibe menu principal e processa opções
+- Opções: carregar setup.cfg, arquivo customizado, mostrar alfabeto
 
-MIT
+
